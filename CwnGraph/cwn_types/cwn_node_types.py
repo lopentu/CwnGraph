@@ -405,7 +405,7 @@ class CwnSynset(CwnAnnotationInfo):
                 else:
                     edge_type = edge_x.edge_type
                     end_node_id = edge_x.src_id
-                    edge_directon = "reversed"
+                    edge_direction = "reversed"
                 
                 node_data = cgu.get_node_data(end_node_id) 
                 ntype = node_data.get("node_type")
