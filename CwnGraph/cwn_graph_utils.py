@@ -1,6 +1,8 @@
 import pdb
 import re
+from itertools import chain
 from .cwn_types import *
+
 
 class CwnGraphUtils(GraphStructure):
     """cwn data as graph (vertices and edges)
@@ -49,6 +51,11 @@ class CwnGraphUtils(GraphStructure):
                    ret.append(CwnLemma(v, self))
         return ret
 
+    def find_all_senses(self, lemma):    
+        sense_iter = (x.senses for x in self.find_lemma(f"^{lemma}$"))
+        sense_iter = chain.from_iterable(sense_iter)
+        return list(sense_iter)        
+        
     def find_senses(self, lemma="", definition="", examples=""):
         """Find senses with lemmas, definitions, or examples matching 
         search patterns.

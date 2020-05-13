@@ -2,6 +2,8 @@ from enum import Enum, auto
 from .cwn_annot_types import CwnAnnotationInfo
 from .cwn_relation_types import CwnRelationType
 from collections import namedtuple
+#pylint: disable=import-error
+from nltk.corpus import wordnet as wn
 
 class CwnNode:
     def __init__(self):
@@ -258,10 +260,13 @@ class CwnSense(CwnAnnotationInfo):
                     edge_direction = "reversed"
                 
                 node_data = cgu.get_node_data(end_node_id) 
-                if node_data.get("node_type") == "facet":
+                ntype = node_data.get("node_type")
+                if ntype == "facet":
                     end_node = CwnFacet(end_node_id, cgu) 
-                elif node_data.get("node_type") == "synset":
+                elif ntype == "synset":
                     end_node = CwnSynset(end_node_id, cgu)
+                elif ntype == "pwn_synset":
+                    end_node = PwnSynset(end_node_id, cgu)
                 else:
                     end_node = CwnSense(end_node_id, cgu)
 
@@ -291,6 +296,12 @@ class CwnSense(CwnAnnotationInfo):
         relation_infos = self.relations
         hypernym = [x[1] for x in relation_infos if x[0] == "hyponym"]
         return hypernym
+
+    @property
+    def pwn_synsets(self):
+        relation_infos = self.relations
+        pwn_synsets = [x[1] for x in relation_infos if x[1].node_type=="pwn_synset"]
+        return pwn_synsets
 
     @property
     def synset(self):
@@ -339,6 +350,10 @@ class CwnFacet(CwnSense):
         return "<CwnFacet[{id}]({head}): {definition}>".format(
             head=head_word, **self.__dict__
         )
+
+    @property
+    def lemmas(self):        
+        return self.sense.lemmas
 
     @property
     def sense(self):
@@ -438,3 +453,98 @@ class CwnSynset(CwnAnnotationInfo):
         relation_infos = self.relations
         senses = [x[1] for x in relation_infos if x[0].startswith("is_synset")]
         return senses
+
+class PwnSynset(CwnAnnotationInfo):
+    WN_RELATIONS = [
+        "hypernyms", "hyponyms", "hypernym_paths",
+        "member_holonyms", "member_meronyms",
+        "part_holonyms", "part_meronyms",
+        "substance_holonyms", "substance_meronyms"
+    ]
+
+    def __init__(self, nid, cgu):
+        ndata = cgu.get_node_data(nid)
+        self.cgu = cgu
+        self.id = nid
+        self.node_type = "pwn_synset"
+        self.synset_word1_wn16 = ndata.get("synset_word1", "")
+        self.synset_sno_wn16 = ndata.get("synset_sno", "")  
+        self.synset_wn30_name = ndata.get("wn30_name", "")
+        try:      
+            self.synset_wn30 = wn.synset(ndata.get("wn30_name", ""))
+        except:
+            self.synset_wn30 = None
+        self._relations = None
+
+    def __repr__(self):        
+        return "<PwnSynset[{id}]: {synset_wn30_name}>".format(
+            **self.__dict__
+        )
+
+    def __getattr__(self, attr):                  
+        if attr in PwnSynset.WN_RELATIONS:             
+            if not self.synset_wn30:
+                return []
+            else:                
+                rel_method = getattr(self.synset_wn30, attr)                
+                return rel_method
+        else:
+            raise AttributeError("attribute not found: " + attr)
+
+    def data(self):
+        data_fields = ["node_type"]
+        data_dict= {
+            k: self.__dict__[k] for k in data_fields
+        }
+        return data_dict
+    
+    @property
+    def relations(self):
+        if self._relations is None:
+            cgu = self.cgu
+            relation_infos = []
+            edges = cgu.find_edges(self.id, is_directed=False)
+            for edge_x in edges:               
+                
+                if not edge_x.reversed:
+                    edge_type = edge_x.edge_type
+                    end_node_id = edge_x.tgt_id  
+                    edge_direction = "forward"                  
+                else:
+                    edge_type = edge_x.edge_type
+                    end_node_id = edge_x.src_id
+                    edge_direction = "reversed"
+                
+                node_data = cgu.get_node_data(end_node_id) 
+                ntype = node_data.get("node_type")
+                if ntype == "facet":
+                    end_node = CwnFacet(end_node_id, cgu) 
+                elif ntype == "sense":
+                    end_node = CwnSense(end_node_id, cgu)
+                elif ntype == "synset":
+                    end_node = CwnSynset(end_node_id, cgu)
+                else:
+                    end_node = None
+
+                relation_infos.append((edge_type, end_node, edge_direction))
+
+            self._relations = relation_infos
+        return self._relations
+
+    @property
+    def senses(self):
+        relation_infos = self.relations
+        senses = [x[1] for x in relation_infos if x[1].node_type=="sense"]
+        return senses
+    
+    @property
+    def facets(self):
+        relation_infos = self.relations
+        senses = [x[1] for x in relation_infos if x[1].node_type=="facet"]
+        return senses    
+    
+    @property
+    def cwn_synsets(self):
+        relation_infos = self.relations
+        senses = [x[1] for x in relation_infos if x[1].node_type=="synset"]
+        return senses 
