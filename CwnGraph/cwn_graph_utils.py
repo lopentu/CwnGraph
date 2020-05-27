@@ -106,7 +106,16 @@ class CwnGraphUtils(GraphStructure):
                 example_matched:
                 sense_list.append(sense_x)                
         return sense_list            
-            
+    
+    def senses(self):
+        sense_iter = filter(lambda x: x[1].get("node_type", "") == "sense", 
+                        self.V.items())
+        for sense_id, sense_data in sense_iter:
+            try:
+                yield CwnSense(sense_id, self)
+            except Exception as ex:
+                print(ex)        
+
     def find_edges(self, node_id, is_directed = True):
         ret = []
         

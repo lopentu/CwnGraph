@@ -237,8 +237,16 @@ class CwnSense(CwnAnnotationInfo):
             for edge_x in edges:
                 if edge_x.edge_type == "has_sense":
                     lemma_nodes.append(CwnLemma(edge_x.src_id, cgu))
-            self._lemmas = lemma_nodes
+            self._lemmas = lemma_nodes        
         return self._lemmas
+
+    @property
+    def head_word(self):
+        lemmas = self.lemmas
+        if lemmas:
+            return lemmas[0].lemma
+        else:
+            return ""
 
     @property
     def relations(self):
@@ -300,7 +308,7 @@ class CwnSense(CwnAnnotationInfo):
     @property
     def pwn_synsets(self):
         relation_infos = self.relations
-        pwn_synsets = [x[1] for x in relation_infos if x[1].node_type=="pwn_synset"]
+        pwn_synsets = [(x[0], x[1]) for x in relation_infos if x[1].node_type=="pwn_synset"]
         return pwn_synsets
 
     @property
@@ -484,12 +492,16 @@ class PwnSynset(CwnAnnotationInfo):
     def __getattr__(self, attr):                  
         if attr in PwnSynset.WN_RELATIONS:             
             if not self.synset_wn30:
-                return []
+                raise AttributeError("attribute not found: " + attr)
             else:                
                 rel_method = getattr(self.synset_wn30, attr)                
                 return rel_method
         else:
             raise AttributeError("attribute not found: " + attr)
+
+    @property
+    def has_wn30(self):
+        return bool(self.synset_wn30_name)
 
     def data(self):
         data_fields = ["node_type"]
@@ -498,6 +510,13 @@ class PwnSynset(CwnAnnotationInfo):
         }
         return data_dict
     
+    @property
+    def wn30_synset(self):
+        try:
+            return wn.synset(self.synset_wn30_name)
+        except Exception:
+            raise ValueError("Cannot find synset or no mapping exists")
+
     @property
     def relations(self):
         if self._relations is None:
