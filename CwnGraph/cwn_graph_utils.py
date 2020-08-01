@@ -1,6 +1,6 @@
 import pdb
 import re
-from itertools import chain
+from itertools import chain, groupby
 from .cwn_types import *
 
 
@@ -161,5 +161,19 @@ class CwnGraphUtils(GraphStructure):
         
     def from_sense_id(self, sense_id):
         return CwnSense(sense_id, self)
+    
+    def get_all_lemmas(self):
+        lemmas = [CwnLemma(nid, self) for nid, ndata in self.V.items()
+                    if ndata["node_type"] == "lemma"]
+        lemmas = sorted(lemmas, key=lambda x: (x.lemma, x.lemma_sno or 0))
+        lemma_groups = groupby(lemmas, key=lambda x: x.lemma)
+        lemma_groups = {grp_key: list(grp_iter) 
+            for grp_key, grp_iter in lemma_groups if grp_key}
+        return lemma_groups
+    
+    def get_all_senses(self):
+        senses = [CwnSense(nid, self) for nid, ndata in self.V.items()
+                    if ndata["node_type"] == "sense"]        
+        return senses
 
 

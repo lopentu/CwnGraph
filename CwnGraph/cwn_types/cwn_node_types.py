@@ -228,6 +228,23 @@ class CwnSense(CwnAnnotationInfo):
             examples.extend(facet_x.examples)
         return examples
 
+    def all_relations(self):
+        """Retrieve all relations in this sense, 
+        including relations links of sense facets.
+        
+        Returns
+        -------
+        list
+            a list of relation tuples (``Tuple[str, CwnSense, str]``)
+        """
+        relations = self.relations
+        if not relations:
+            relations = []        
+        
+        for facet_x in self.facets:
+            relations.extend(facet_x.relations)
+        return relations
+
     @property
     def lemmas(self):
         if self._lemmas is None:
