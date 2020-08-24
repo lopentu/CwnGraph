@@ -152,7 +152,7 @@ class CwnAnnotator:
         else:
             return False
 
-    def remove_relation(self, cwn_relation:[Tuple[str, str], CwnRelation]):
+    def remove_relation(self, cwn_relation:Tuple[str, str, CwnRelationType]):
         if isinstance(cwn_relation, CwnRelation):
             relation_id = cwn_relation.id
         else:
