@@ -313,13 +313,13 @@ class CwnSense(CwnAnnotationInfo):
     @property
     def hypernym(self):
         relation_infos = self.relations
-        hypernym = [x[1] for x in relation_infos if x[0] == "hypernym"]
+        hypernym = [x[1] for x in relation_infos if x[0] == "hypernym" and x[2] == "forward"]
         return hypernym
     
     @property
     def hyponym(self):
         relation_infos = self.relations
-        hypernym = [x[1] for x in relation_infos if x[0] == "hyponym"]
+        hypernym = [x[1] for x in relation_infos if x[0] == "hyponym" and x[2] == "forward"]
         return hypernym
 
     @property
@@ -331,7 +331,7 @@ class CwnSense(CwnAnnotationInfo):
     @property
     def synset(self):
         relation_infos = self.relations
-        synsets = [x[1] for x in relation_infos if x[0] == "is_synset"]
+        synsets = [x[1] for x in relation_infos if x[0] == "is_synset" and x[2] == "forward"]
         if not synsets:
             synset = None
         elif len(synsets) == 1:
@@ -344,13 +344,13 @@ class CwnSense(CwnAnnotationInfo):
     @property
     def synonym(self):
         relation_infos = self.relations
-        synonyms = [x[1] for x in relation_infos if x[0] == "synonym"]
+        synonyms = [x[1] for x in relation_infos if x[0] == "synonym" and x[2] == "forward"]
         return synonyms
 
     @property
     def facets(self):
         relation_infos = self.relations
-        facets = [x[1] for x in relation_infos if x[0] == "has_facet"]
+        facets = [x[1] for x in relation_infos if x[0] == "has_facet" and x[2] == "forward"]
         return facets
 
 class CwnFacet(CwnSense):

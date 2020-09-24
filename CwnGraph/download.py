@@ -3,9 +3,7 @@ import zipfile
 import tempfile
 
 def get_model_path():
-    home_dir = os.path.expanduser("~")
-    cache_dir = os.path.join(home_dir, ".cwn_graph")
-    model_path = os.path.join(cache_dir, "cwn_graph.pyobj")
+
     return model_path
 
 def download(upgrade=False):
@@ -14,8 +12,16 @@ def download(upgrade=False):
         return 
 
     import gdown
-    url = "https://drive.google.com/uc?id=1opGRw490cAizoj2JHzR8UIZME3Mc65Ze"    
-    model_path = get_model_path()
+
+    home_dir = os.path.expanduser("~")
+    cache_dir = os.path.join(home_dir, ".cwn_graph")
+    
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
+
+    model_path = os.path.join(cache_dir, "cwn_graph.pyobj")    
+    url = "https://drive.google.com/uc?id=1opGRw490cAizoj2JHzR8UIZME3Mc65Ze"        
+        
     gdown.download(url, model_path, quiet=False)  
     print("CwnGraph data installed.")      
 
