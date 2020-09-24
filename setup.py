@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='CwnGraph',
-    version='0.1.1',
-    packages=['CwnGraph',],
+    version='0.1.3',
+    packages=find_packages(),
     license='GPL GNUv3',
     author="NTUGIL LOPE Lab",   
     setup_requires=["wheel"],
