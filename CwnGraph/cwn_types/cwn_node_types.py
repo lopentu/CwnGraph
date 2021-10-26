@@ -181,14 +181,15 @@ class CwnSense(CwnAnnotationInfo):
 
     def __eq__(self, other):
         if isinstance(other, CwnSense):
-            return self.definition == other.definition and \
+            return self.id == other.id and \
+                self.definition == other.definition and \
                 self.pos == other.pos and \
-                (self.src and other.src and self.src == other.src)
+                self.src == other.src
         else:
             return False
 
     def __hash__(self):
-        return hash((self.definition, self.pos, self.src))
+        return hash((self.id, self.definition, self.pos, self.src))
 
     def data(self):
         """Retrieve all data of this sense.
