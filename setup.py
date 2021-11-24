@@ -1,12 +1,13 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name='CwnGraph',
-    version='0.1.0',
-    packages=['CwnGraph',],
-    license='CC-SA-BY-NC',
-    author="Graduate Institute of Linguistics, National Taiwan University",
-    author_email="shukaihsieh@ntu.edu.tw",
+    version='0.1.5',
+    packages=find_packages(),
+    license='GPL GNUv3',
+    author="NTUGIL LOPE Lab",   
+    setup_requires=["wheel"],
+    install_requires=["gdown"],
     description="A CWN Python binding with graph structure",
     long_description="A CWN Python binding with graph structure"
 )

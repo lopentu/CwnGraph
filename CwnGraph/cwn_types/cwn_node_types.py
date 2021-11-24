@@ -181,14 +181,15 @@ class CwnSense(CwnAnnotationInfo):
 
     def __eq__(self, other):
         if isinstance(other, CwnSense):
-            return self.definition == other.definition and \
+            return self.id == other.id and \
+                self.definition == other.definition and \
                 self.pos == other.pos and \
-                (self.src and other.src and self.src == other.src)
+                self.src == other.src
         else:
             return False
 
     def __hash__(self):
-        return hash((self.definition, self.pos, self.src))
+        return hash((self.id, self.definition, self.pos, self.src))
 
     def data(self):
         """Retrieve all data of this sense.
@@ -313,13 +314,13 @@ class CwnSense(CwnAnnotationInfo):
     @property
     def hypernym(self):
         relation_infos = self.relations
-        hypernym = [x[1] for x in relation_infos if x[0] == "hypernym"]
+        hypernym = [x[1] for x in relation_infos if x[0] == "hypernym" and x[2] == "forward"]
         return hypernym
     
     @property
     def hyponym(self):
         relation_infos = self.relations
-        hypernym = [x[1] for x in relation_infos if x[0] == "hyponym"]
+        hypernym = [x[1] for x in relation_infos if x[0] == "hyponym" and x[2] == "forward"]
         return hypernym
 
     @property
@@ -331,7 +332,7 @@ class CwnSense(CwnAnnotationInfo):
     @property
     def synset(self):
         relation_infos = self.relations
-        synsets = [x[1] for x in relation_infos if x[0] == "is_synset"]
+        synsets = [x[1] for x in relation_infos if x[0] == "is_synset" and x[2] == "forward"]
         if not synsets:
             synset = None
         elif len(synsets) == 1:
@@ -351,7 +352,7 @@ class CwnSense(CwnAnnotationInfo):
     @property
     def facets(self):
         relation_infos = self.relations
-        facets = [x[1] for x in relation_infos if x[0] == "has_facet"]
+        facets = [x[1] for x in relation_infos if x[0] == "has_facet" and x[2] == "forward"]
         return facets
 
 class CwnFacet(CwnSense):
