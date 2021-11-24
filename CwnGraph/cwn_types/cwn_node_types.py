@@ -344,7 +344,8 @@ class CwnSense(CwnAnnotationInfo):
     @property
     def synonym(self):
         relation_infos = self.relations
-        synonyms = [x[1] for x in relation_infos if x[0] == "synonym"]
+        synonyms = [x[1] for x in relation_infos 
+                    if x[0] == "synonym" and x[2]=="forward"]
         return synonyms
 
     @property
