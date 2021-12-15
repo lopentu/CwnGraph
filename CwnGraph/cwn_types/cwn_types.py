@@ -4,17 +4,6 @@ from enum import Enum, auto
 from typing import Tuple
 from collections import namedtuple
 
-class AnnotAction(Enum):
-    Edit = 1
-    Delete = 2
-
-class AnnotRecord:
-    def __init__(self, annot_id:str, annot_action:AnnotAction, raw_id:str=None):
-        self.action = annot_action
-        self.annot_type = "generic"  
-        self.annot_id = annot_id
-        self.raw_id = raw_id
-
 class GraphStructure:
     def __init__(self):
         self.V = {}
