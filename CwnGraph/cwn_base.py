@@ -17,6 +17,9 @@ class CwnImage(CwnGraphUtils):
     def __init__(self, V, E, meta):
         super(CwnImage, self).__init__(V, E, meta)
 
+    def __repr__(self):
+        return "<CwnImage: {}>".format(self.meta.get("label", "<cwn-image>"))
+
     @classmethod
     def load(cls, img_path):        
         with open(img_path, "rb") as fin:

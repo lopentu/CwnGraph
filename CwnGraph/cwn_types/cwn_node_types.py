@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from .cwn_relation_types import CwnRelationType
 from collections import namedtuple
+from typing import List
 #pylint: disable=import-error
 from nltk.corpus import wordnet as wn
 
@@ -61,6 +62,8 @@ class CwnLemma(CwnNode):
         self.lemma_sno = ndata.get("lemma_sno", 1)
         self.zhuyin = ndata.get("zhuyin", "")        
         self._senses = None
+        self._synsets = None
+        
 
     def __repr__(self):
         return "<CwnLemma: {lemma}_{lemma_sno}>".format(
@@ -131,6 +134,18 @@ class CwnLemma(CwnNode):
             self._senses = sense_nodes
         return self._senses
 
+    @property
+    def synsets(self):
+        if self._synsets is None:
+            cgu = self.cgu
+            synset_nodes = []
+            edges = cgu.find_edges(self.id)
+            for edge_x in edges:
+                if edge_x.edge_type == "has_synset":
+                    synset_nodes.append(CwnSynset(edge_x.tgt_id, cgu))
+            self._senses = synset_nodes
+        return self._synsets
+
 
 class CwnSense(CwnNode):
     """Class representing a sense.
@@ -195,6 +210,17 @@ class CwnSense(CwnNode):
 
     def __hash__(self):
         return hash((self.id, self.definition, self.pos, self.src))
+
+    @classmethod
+    def create(cls, cgu, 
+            sense_id, pos: str, definition: str, 
+            examples: List[str]=[], domain: str=""):
+        inst = CwnSense(sense_id, cgu)
+        inst.pos = pos
+        inst.definition = definition
+        inst.examples = examples
+        inst.domain = domain
+        return inst
 
     def data(self):
         """Retrieve all data of this sense.
@@ -405,7 +431,9 @@ class CwnSynset(CwnNode):
         self.cgu = cgu
         self.id = nid
         self.node_type = "synset"
+        self.pos = ndata.get("pos", "")
         self.gloss = ndata.get("gloss", "")
+        self.examples = ndata.get("examples", [])
         self.pwn_word = ndata.get("pwn_word", "")
         self.pwn_id = ndata.get("pwn_id", "")
         self._relations = None
@@ -416,11 +444,26 @@ class CwnSynset(CwnNode):
         )
 
     def data(self):
-        data_fields = ["node_type", "gloss", "pwn_word", "pwn_id"]
+        data_fields = ["node_type", "pos", "gloss", 
+                       "examples", "pwn_word", "pwn_id"]
         data_dict= {
             k: self.__dict__[k] for k in data_fields
         }
         return data_dict
+
+    
+    @classmethod
+    def create(cls, cgu, 
+            synset_id, pos: str, gloss: str, 
+            examples: List[str]=[],
+            pwn_word: str="", pwn_id: str=""):
+        inst = CwnSynset(synset_id, cgu)
+        inst.pos = pos
+        inst.gloss = gloss
+        inst.examples = examples
+        inst.pwn_word = pwn_word
+        inst.pwn_id = pwn_id        
+        return inst
 
     def __eq__(self, other):
         if isinstance(other, CwnSynset):

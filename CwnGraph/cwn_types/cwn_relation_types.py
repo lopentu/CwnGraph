@@ -18,6 +18,7 @@ class CwnRelationType(Enum):
     has_lemma = 92
     has_facet = 93
     is_synset = 94
+    has_synset = 95
 
     def __repr__(self):
         return f"<CwnRelationType: {str(self.name)}>"
@@ -76,6 +77,13 @@ class CwnRelation:
         self.edge_type = edata.get("edge_type", "generic")        
         self.reversed = reversed
 
+    @classmethod
+    def create(cls, cgu, src_id, tgt_id, edge_type: CwnRelationType):
+        eid = (src_id, tgt_id)
+        inst = CwnRelation(eid, cgu)
+        inst.edge_type = edge_type.name
+        return inst
+        
     def __repr__(self):
         src_id = self.id[0]
         tgt_id = self.id[1]
