@@ -3,6 +3,27 @@ from shutil import copyfile
 from pathlib import Path
 from .cwn_graph_utils import CwnGraphUtils
 
+def load_cwn_image(fpath):
+    with open(fpath, "rb") as fin:
+        data = pickle.load(fin)
+        if len(data) == 2:
+            V, E = data
+            meta = {}
+        else:
+            V, E, meta = data
+    return V, E, meta
+
+class CwnImage(CwnGraphUtils):
+    def __init__(self, V, E, meta):
+        super(CwnImage, self).__init__(V, E, meta)
+
+    @classmethod
+    def load(cls, img_path):        
+        with open(img_path, "rb") as fin:
+            V, E, meta = load_cwn_image(img_path)        
+        inst = CwnImage(V, E, meta)
+        return inst
+
 class CwnBase(CwnGraphUtils):
     """The base cwn reference data.
     """
@@ -12,13 +33,7 @@ class CwnBase(CwnGraphUtils):
         fpath = home_path / f".cwn_graph/cwn_graph.pyobj"
         if not fpath.exists():
             print("ERROR: install cwn_graph.pyobj first")
-        with open(fpath, "rb") as fin:
-            data = pickle.load(fin)
-            if len(data) == 2:
-                V, E = data
-                meta = {}
-            else:
-                V, E, meta = data
+        V, E, meta = load_cwn_image(fpath)
         super(CwnBase, self).__init__(V, E, meta)        
     
     @staticmethod
