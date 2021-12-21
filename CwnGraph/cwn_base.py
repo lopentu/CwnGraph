@@ -23,6 +23,11 @@ class CwnImage(CwnGraphUtils):
             V, E, meta = load_cwn_image(img_path)        
         inst = CwnImage(V, E, meta)
         return inst
+    
+    def save(self, fpath):
+        with open(fpath, "wb") as fout:
+            pickle.dump((self.V, self.E, self.meta), fout)
+        return fpath
 
 class CwnBase(CwnGraphUtils):
     """The base cwn reference data.
