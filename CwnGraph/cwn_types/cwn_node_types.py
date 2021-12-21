@@ -1,5 +1,4 @@
 from enum import Enum, auto
-from .cwn_annot_types import CwnAnnotationInfo
 from .cwn_relation_types import CwnRelationType
 from collections import namedtuple
 #pylint: disable=import-error
@@ -19,11 +18,10 @@ class CwnNode:
     def __hash__(self):
         raise NotImplementedError()
 
-class CwnGlyph(CwnAnnotationInfo):
+class CwnGlyph(CwnNode):
     def __init__(self, nid, cgu):
         ndata = cgu.get_node_data(nid)
-        self.glyph = ndata.get("glyph", "")
-        self.annot = ndata.get("annot", {})
+        self.glyph = ndata.get("glyph", "")        
 
     def __repr__(self):
         return "<CwnLemma: {lemma}_{lemma_sno}>".format(
@@ -45,7 +43,7 @@ class CwnGlyph(CwnAnnotationInfo):
             k: self.__dict__[k] for k in data_fields
         }
 
-class CwnLemma(CwnAnnotationInfo):
+class CwnLemma(CwnNode):
     """Class representing a lemma.
 
     Attributes
@@ -61,8 +59,7 @@ class CwnLemma(CwnAnnotationInfo):
         self.node_type = "lemma"
         self.lemma = ndata.get("lemma", "")
         self.lemma_sno = ndata.get("lemma_sno", 1)
-        self.zhuyin = ndata.get("zhuyin", "")
-        self.annot = ndata.get("annot", {})
+        self.zhuyin = ndata.get("zhuyin", "")        
         self._senses = None
 
     def __repr__(self):
@@ -90,10 +87,19 @@ class CwnLemma(CwnAnnotationInfo):
             keys: ``node_type``, ``lemma``, ``lemma_sno``, ``zhuyin``,
             ``annot``
         """
-        data_fields = ["node_type", "lemma", "lemma_sno", "zhuyin", "annot"]
+        data_fields = ["node_type", "lemma", "lemma_sno", "zhuyin"]
         return {
             k: self.__dict__[k] for k in data_fields
         }
+
+    @classmethod
+    def create(cls, cgu, 
+            lemma_id, lemma: str, zhuyin: str, lemma_sno: int=1):
+        inst = CwnLemma(lemma_id, cgu)
+        inst.lemma = lemma
+        inst.zhuyin = zhuyin
+        inst.lemma_sno = lemma_sno
+        return inst
 
     @staticmethod
     def from_word(word, cgu):
@@ -126,7 +132,7 @@ class CwnLemma(CwnAnnotationInfo):
         return self._senses
 
 
-class CwnSense(CwnAnnotationInfo):
+class CwnSense(CwnNode):
     """Class representing a sense.
     
     Attributes
@@ -165,8 +171,7 @@ class CwnSense(CwnAnnotationInfo):
         self.definition = ndata.get("def", "")
         self.src = ndata.get("src", None)
         self.examples = ndata.get("examples", [])
-        self.domain = ndata.get("domain", "")
-        self.annot = ndata.get("annot", {})
+        self.domain = ndata.get("domain", "")        
         self._relations = None
         self._lemmas = None
 
@@ -201,7 +206,7 @@ class CwnSense(CwnAnnotationInfo):
             keys: ``node_type``, ``pos``, ``examples``, ``domain``,
             ``annot``, ``def``
         """
-        data_fields = ["node_type", "pos", "examples", "domain", "annot"]
+        data_fields = ["node_type", "pos", "examples", "domain"]
         data_dict= {
             k: self.__dict__[k] for k in data_fields
         }
@@ -394,7 +399,7 @@ class CwnFacet(CwnSense):
         return self._sense
         
 
-class CwnSynset(CwnAnnotationInfo):
+class CwnSynset(CwnNode):
     def __init__(self, nid, cgu):
         ndata = cgu.get_node_data(nid)
         self.cgu = cgu
@@ -481,7 +486,7 @@ class CwnSynset(CwnAnnotationInfo):
         senses = [x[1] for x in relation_infos if x[0].startswith("is_synset")]
         return senses
 
-class PwnSynset(CwnAnnotationInfo):
+class PwnSynset(CwnNode):
     WN_RELATIONS = [
         "hypernyms", "hyponyms", "hypernym_paths",
         "member_holonyms", "member_meronyms",
@@ -507,6 +512,15 @@ class PwnSynset(CwnAnnotationInfo):
         return "<PwnSynset[{id}]: {synset_wn30_name}>".format(
             **self.__dict__
         )
+
+    def __eq__(self, other):
+        if isinstance(other, PwnSynset):
+            return self.synset_word1_wn16 == other.synset_word1_wn16
+        else:
+            return False
+
+    def __hash__(self):
+        return hash(self.synset_word1_wn16)
 
     def __getattr__(self, attr):                  
         if attr in PwnSynset.WN_RELATIONS:             

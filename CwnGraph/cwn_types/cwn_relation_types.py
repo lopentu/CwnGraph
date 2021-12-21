@@ -1,5 +1,4 @@
 from enum import Enum, auto
-from .cwn_annot_types import CwnAnnotationInfo
 
 class CwnRelationType(Enum):
     holonym = 1
@@ -69,13 +68,12 @@ class CwnRelationType(Enum):
         return label_map.get(zhlabel, CwnRelationType.generic)
 
 
-class CwnRelation(CwnAnnotationInfo):
+class CwnRelation:
     def __init__(self, eid, cgu, reversed=False):
         edata = cgu.get_edge_data(eid)
         self.cgu = cgu
         self.id = eid
-        self.edge_type = edata.get("edge_type", "generic")
-        self.annot = {}
+        self.edge_type = edata.get("edge_type", "generic")        
         self.reversed = reversed
 
     def __repr__(self):
@@ -87,7 +85,7 @@ class CwnRelation(CwnAnnotationInfo):
             return f"<CwnRelation> {self.edge_type}(rev): {tgt_id} <- {src_id}"
 
     def data(self):
-        data_fields = ["edge_type", "annot"]
+        data_fields = ["edge_type"]
         data_dict= {
             k: self.__dict__[k] for k in data_fields
         }

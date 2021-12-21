@@ -1,4 +1,3 @@
-from .cwn_annot_types import CwnAnnotationInfo
 from .cwn_node_types import CwnNode, CwnGlyph, CwnLemma, CwnSense
 from .cwn_node_types import CwnFacet, CwnSynset, PwnSynset
 from .cwn_relation_types import CwnRelationType, CwnRelation
