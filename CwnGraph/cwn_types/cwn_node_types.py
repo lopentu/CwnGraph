@@ -248,12 +248,7 @@ class CwnSense(CwnNode):
         list
             a list of example sentences (``str``)
         """
-        examples = self.examples
-        if not examples:
-            examples = []
-        if isinstance(examples,str) and\
-            examples != '':
-            examples = [examples]
+        examples = [x for x in self.examples if x]
         
         
         for facet_x in self.facets:
