@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='CwnGraph',
-    version='0.1.5',
+    version='0.2.0',
     packages=find_packages(),
     license='GPL GNUv3',
     author="NTUGIL LOPE Lab",   
