@@ -334,7 +334,10 @@ class CwnSense(CwnNode):
 
     @property
     def semantic_relations(self):
-        relation_infos = self.relations
+        relation_infos = [rel_x 
+            for rel_x in self.relations
+            if rel_x[2] == 'forward']
+            
         sem_relations = []
         for rel_x in relation_infos:
             rel_type = CwnRelationType[rel_x[0]]
