@@ -97,7 +97,17 @@ class CwnLemma(CwnNode):
 
     @classmethod
     def create(cls, cgu, 
-            lemma_id, lemma: str, zhuyin: str, lemma_sno: int=1):
+            lemma_id, lemma: str, zhuyin: str, 
+            lemma_sno: int=1,
+            auto_pad_id=True):
+        
+        if isinstance(lemma_id, int):
+            lemma_id = str(lemma_id)
+
+        if len(lemma_id) < 6 and auto_pad_id:
+            lemma_id = lemma_id.zfill(6)
+            print("WARNING: lemma_id should have 6 digits. autopad zero as auto_pad_id=True")
+
         inst = CwnLemma(lemma_id, cgu)
         inst.lemma = lemma
         inst.zhuyin = zhuyin
@@ -213,8 +223,17 @@ class CwnSense(CwnNode):
 
     @classmethod
     def create(cls, cgu, 
-            sense_id, pos: str, definition: str, 
-            examples: List[str]=[], domain: str=""):
+            sense_id: str, pos: str, definition: str, 
+            examples: List[str]=[], domain: str="", 
+            auto_pad_id=True):
+        
+        if isinstance(sense_id, int):
+            sense_id = str(sense_id)
+
+        if len(sense_id) < 8 and auto_pad_id:
+            sense_id = sense_id.zfill(8)
+            print("WARNING: sense_id should have 8 digits. autopad zero as auto_pad_id=True")
+
         inst = CwnSense(sense_id, cgu)
         inst.pos = pos
         inst.definition = definition
