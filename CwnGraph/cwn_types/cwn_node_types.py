@@ -202,11 +202,11 @@ class CwnSense(CwnNode):
 
     def __repr__(self):
         try:
-            head_word = self.lemmas[0].lemma
+            head_word = self.lemmas[0].lemma            
         except (IndexError, AttributeError):
             head_word = "----"
-        return "<CwnSense[{id}]({head}): {definition}>".format(
-            head=head_word, **self.__dict__
+        return "<CwnSense[{id}]({head}，{pos}): {definition}>".format(
+            head=head_word, **self.__dict__            
         )
 
     def __eq__(self, other):
