@@ -1,7 +1,10 @@
 import os
 import json
 
-def dump_json(V, E, prefix):
+def dump_json(V, E, meta, prefix):
+    with open(f"{prefix}_meta.json", "w", encoding="UTF-8") as fout:
+        json.dump(meta, fout, indent=2, ensure_ascii=False)
+
     with open(f"{prefix}_nodes.json", "w", encoding="UTF-8") as fout:
         json.dump(V, fout, indent=2, ensure_ascii=False)
     

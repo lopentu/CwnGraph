@@ -1,0 +1,14 @@
+{
+    "version": "v2022.03",
+    "images": [
+        {
+            "tag": "v.2020.05",
+            "file": "cwn-graph-v.2020.05.pyobj",
+            "drive_id": "18Dmy2fU6qGfFOsS3iCV7j-5u9xz6LfdP"
+        }, {
+            "tag": "base", 
+            "file": "cwn_graph.pyobj",
+            "drive_id": "1opGRw490cAizoj2JHzR8UIZME3Mc65Ze" 
+        }
+    ]
+}

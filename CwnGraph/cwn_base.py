@@ -1,7 +1,12 @@
 import pickle
 from shutil import copyfile
 from pathlib import Path
+from .download import (
+    get_manifest, get_cache_dir,
+    ensure_image)
 from .cwn_graph_utils import CwnGraphUtils
+from . import cwn_stat
+from . import cwnio
 
 def load_cwn_image(fpath):
     with open(fpath, "rb") as fin:
@@ -18,53 +23,47 @@ class CwnImage(CwnGraphUtils):
         super(CwnImage, self).__init__(V, E, meta)
 
     def __repr__(self):
-        return "<CwnImage: {}>".format(self.meta.get("label", "<cwn-image>"))
+        return "<CwnImage: {}>".format(self.meta.get("label", "<cwn-image>"))    
 
     @classmethod
-    def load(cls, img_path):        
-        with open(img_path, "rb") as fin:
-            V, E, meta = load_cwn_image(img_path)        
+    def load(cls, img_path_or_tag:str):
+        manifest = get_manifest()
+        tags = [x["tag"] for x in manifest["images"]]
+
+        if not tags:
+            raise ValueError("Something is wrong. There is no image in the manifest.")
+
+        if img_path_or_tag == "latest":
+            img_path_or_tag = tags[0]
+        
+        if img_path_or_tag in tags:
+            image_path = ensure_image(img_path_or_tag)            
+        else:
+            image_path = img_path_or_tag
+
+        V, E, meta = load_cwn_image(image_path)
         inst = CwnImage(V, E, meta)
         return inst
-    
-    def save(self, fpath):
-        with open(fpath, "wb") as fout:
-            pickle.dump((self.V, self.E, self.meta), fout)
-        return fpath
 
-class CwnBase(CwnGraphUtils):
+    @classmethod
+    def latest(cls):
+        return cls.load("latest")
+    
+    def save(self):
+        prefix = self.meta.get("label", "cwnimage").replace(".", "")
+        cwnio.dump_json(self.V, self.E, self.meta, prefix)
+
+    def statistics(self):
+        return cwn_stat.simple_statistics(self)
+        
+class CwnBase(CwnImage):
     """The base cwn reference data.
     """
-
     def __init__(self):
-        home_path = Path.home()                
-        fpath = home_path / f".cwn_graph/cwn_graph.pyobj"
-        if not fpath.exists():
-            print("ERROR: install cwn_graph.pyobj first")
-        V, E, meta = load_cwn_image(fpath)
-        super(CwnBase, self).__init__(V, E, meta)        
-    
-    @staticmethod
-    def install_cwn(cwn_path):
-        """Install cwn for the first time.
+        manifest = get_manifest()
+        image_path = ensure_image("base")
+        V, E, meta = load_cwn_image(image_path)
+        super(CwnBase, self).__init__(V, E, meta)            
 
-        CwnGraph can be installed as a package. When running first time, 
-        prepare ``cwn_graph.pyobj`` and install with :func:`install_cwn() <CwnGraph.cwn_base.CwnBase.install_cwn>`. 
-        After installation, CwnGraph use CWN data in its own home directory, 
-        regardless of working directory.
-        
-        Parameters
-        ----------
-        cwn_path : str
-            Path to ``cwn_graph.pyobj``.
-        """
-        home_path = Path.home()
-        cwn_user_dir = home_path / ".cwn_graph"
-        if not cwn_user_dir.exists():
-            cwn_user_dir.mkdir()
-        try:        
-            copyfile(cwn_path, cwn_user_dir / "cwn_graph.pyobj")
-            print("CWN data installed")
-        except FileNotFoundError as ex:
-            print(ex)
-            print("ERROR: install failed")
+    def __repr__(self):
+        return "<CwnBase base-image>"
