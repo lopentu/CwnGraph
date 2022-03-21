@@ -27,6 +27,7 @@ class CwnImage(CwnGraphUtils):
 
     @classmethod
     def load(cls, img_path_or_tag:str):
+        # FIX THIS: CwnImage.load() is unnecessarily coupled with manifest
         manifest = get_manifest()
         tags = [x["tag"] for x in manifest["images"]]
 
@@ -49,9 +50,10 @@ class CwnImage(CwnGraphUtils):
     def latest(cls):
         return cls.load("latest")
     
-    def save(self):
-        prefix = self.meta.get("label", "cwnimage").replace(".", "")
-        cwnio.dump_json(self.V, self.E, self.meta, prefix)
+    def save(self, fpath):
+        with open(fpath, "wb") as fout:
+            pickle.dump((self.V, self.E, self.meta), fout)
+        return fpath
 
     def statistics(self):
         return cwn_stat.simple_statistics(self)
