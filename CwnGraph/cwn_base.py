@@ -50,6 +50,10 @@ class CwnImage(CwnGraphUtils):
     def latest(cls):
         return cls.load("latest")
     
+    @classmethod
+    def beta(cls):
+        return cls.load("beta")
+        
     def save(self, fpath):
         with open(fpath, "wb") as fout:
             pickle.dump((self.V, self.E, self.meta), fout)

@@ -49,6 +49,8 @@ def ensure_image(tag: str):
         raise ValueError(f"tag {tag} not found")
     else:
         img_info = img_info[0]
+        if "note" in img_info:
+            print("[NOTE]", img_info["note"])
         img_cache_path = get_cache_dir() / img_info["file"]
         if not img_cache_path.exists():
             print(f"downloading image: {img_info['drive_id']}...")
