@@ -9,11 +9,19 @@ def get_cache_dir():
     cache_dir.mkdir(exist_ok=True, parents=True)
     return cache_dir
 
-def update_manifest():
+def update_manifest(manifest_in=None):
     import json
-    print("updating manifest...")    
-    manifest = requests.get(MANIFEST_URL).json()
+    print("updating manifest...")
+    
+    if not manifest_in:    
+        manifest = requests.get(MANIFEST_URL).json()
+    else:
+        with open(manifest_in, "r", encoding="UTF-8") as fin:
+            import json
+            manifest = json.load(fin)
+
     cache_dir = get_cache_dir()
+    
     manifest_path = (cache_dir/"manifest.json")
     with manifest_path.open("w", encoding="UTF-8") as fout:
         json.dump(manifest, fout)
