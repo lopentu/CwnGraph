@@ -197,16 +197,17 @@ class CwnSense(CwnNode):
         self.src = ndata.get("src", None)
         self.examples = ndata.get("examples", [])
         self.domain = ndata.get("domain", "")        
+        self.supplementary = ndata.get("supplementary", "")
         self._relations = None
         self._lemmas = None
 
-    def __repr__(self):
+    def __repr__(self):        
         try:
-            head_word = self.lemmas[0].lemma            
+            head_word = self.lemmas[0].lemma                        
         except (IndexError, AttributeError):
             head_word = "----"
-        return "<CwnSense[{id}]({head}，{pos}): {definition}>".format(
-            head=head_word, **self.__dict__            
+        return "<CwnSense[{id}]({head}，{pos}): {definition}{supp_flag}>".format(
+            head=head_word, **self.__dict__
         )
 
     def __eq__(self, other):
@@ -225,6 +226,7 @@ class CwnSense(CwnNode):
     def create(cls, cgu, 
             sense_id: str, pos: str, definition: str, 
             examples: List[str]=[], domain: str="", 
+            supplementary: str="",
             auto_pad_id=True):
         
         if isinstance(sense_id, int):
@@ -239,6 +241,7 @@ class CwnSense(CwnNode):
         inst.definition = definition
         inst.examples = examples
         inst.domain = domain
+        inst.supplementary = supplementary
         return inst
 
     def data(self):
@@ -251,11 +254,12 @@ class CwnSense(CwnNode):
             keys: ``node_type``, ``pos``, ``examples``, ``domain``,
             ``annot``, ``def``
         """
-        data_fields = ["node_type", "pos", "examples", "domain"]
+        data_fields = ["node_type", "pos", "examples", 
+                       "domain", "supplementary"]
         data_dict= {
             k: self.__dict__[k] for k in data_fields
         }
-        data_dict["def"] = self.definition
+        data_dict["def"] = self.definition        
         return data_dict
 
     def all_examples(self):
