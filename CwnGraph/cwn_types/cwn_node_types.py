@@ -206,7 +206,7 @@ class CwnSense(CwnNode):
             head_word = self.lemmas[0].lemma                        
         except (IndexError, AttributeError):
             head_word = "----"
-        return "<CwnSense[{id}]({head}，{pos}): {definition}{supp_flag}>".format(
+        return "<CwnSense[{id}]({head}，{pos}): {definition}>".format(
             head=head_word, **self.__dict__
         )
 
