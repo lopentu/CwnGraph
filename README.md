@@ -7,31 +7,30 @@ Cwn Python API 程式介面
 
 說明文件：[readthedocs](https://cwngraph.readthedocs.io/en/latest/)
 
-CwnGraph 0.1.0 版資料下載：
-[Google Drive](https://drive.google.com/file/d/1opGRw490cAizoj2JHzR8UIZME3Mc65Ze/view?usp=sharing)
+CwnGraph 0.3.0 版資料下載：
+[Google Drive](https://drive.google.com/file/d/1C_Hg3ZCKjAe6mVbo-EA7a-AZdpjr5wd-/view?usp=sharing)
 
 # QuickStart
 
 ## 1. Installation
 
-When using CwnGraph for the first time, you would need to download and install the data for cwn (`cwn_graph.pyobj`) with `CwnBase.install_cwn()`:
-
-```python
-from pprint import pprint
-from CwnGraph import CwnBase
-CwnBase.install_cwn("data/cwn_graph.pyobj")
-```
+Start with CwnGraph 0.3.0, there is no additional installation step when using the package. 
+You can access the latest data directly with `CwnImage.latest()`, and the package would download the data automatically.
+Or, the original version (v0.1.0) is still available with `CwnBase()`
 
 ## 2. Load CWN data
 
 To query CWN, the first step is to initialize the cwn data as an object with CwnBase():
 
 ```python
-from CwnGraph import CwnBase
-cwn = CwnBase()
+from CwnGraph import CwnImage
+cwn = CwnImage.latest()
+# the original base data
+# from CwnGraph import CwnImage
+# cwn = CwnBase()
 ```
 
-Now, you can start querying CWN with the methods provided by CwnBase!
+Now, you can start querying CWN with the methods provided by CwnImage!
 
 ## 3. Basic Query
 
