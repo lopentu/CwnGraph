@@ -2,7 +2,7 @@
     "version": "v2022.04",
     "images": [
         {
-            "tag": "v.2020.04.22",
+            "tag": "v.2022.04.22",
             "file": "cwn-graph-v.2020.04.22.pyobj",
             "drive_id": "1C_Hg3ZCKjAe6mVbo-EA7a-AZdpjr5wd-"
         }, {
