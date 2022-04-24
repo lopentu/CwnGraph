@@ -18,7 +18,7 @@ class CwnRelationType(Enum):
     has_lemma = 92
     has_facet = 93
     is_synset = 94
-    has_synset = 95
+    has_synset = 95  # pre-declare for lemma-synset relations
 
     def __repr__(self):
         return f"<CwnRelationType: {str(self.name)}>"
@@ -32,6 +32,20 @@ class CwnRelationType(Enum):
     def is_semantic_relation(self):
         return 0 < self.value <= 20
 
+    def is_upper_relation(self):
+        return self.name in (
+            "holonym", "hypernym"
+        )
+    
+    def is_lower_relation(self):
+        return self.name in (
+            "meronym", "hyponym"
+        )
+
+    def is_synonym_relation(self):
+        return self.name in (
+            "synonym", "is_synset", "has_synset"
+        )
     def inverse(self):
         cls = self.__class__
         inverse_pairs = [

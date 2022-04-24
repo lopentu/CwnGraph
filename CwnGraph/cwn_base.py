@@ -7,6 +7,7 @@ from .download import (
 from .cwn_graph_utils import CwnGraphUtils
 from . import cwn_stat
 from . import cwnio
+from .cwn_types import CwnSense, CwnSynset
 
 def load_cwn_image(fpath):
     with open(fpath, "rb") as fin:
@@ -61,6 +62,68 @@ class CwnImage(CwnGraphUtils):
 
     def statistics(self):
         return cwn_stat.simple_statistics(self)
+    
+    def to_graphviz(self, highlight=None, force_large=False):
+        drawn_nodes = [nid 
+            for nid, ndata in self.V.items() if
+            ndata.get("node_type") != "lemma"]
+
+        if len(drawn_nodes) > 80 and not force_large:
+            raise ValueError(f"The image contains too many nodes ({len(drawn_nodes)}>50). " 
+                             "The resulting graph will be too complicated. "
+                             "Set `force_large=True` to override")
+        
+        import graphviz
+        f = graphviz.Graph('subgraph', engine="neato")        
+        f.attr('node', margin="0.01", height="0.1", width="0.1")
+        undirected_edges = set()
+        for nid, ndata in self.V.items():
+            ntype = ndata.get("node_type")
+            if ntype=="lemma": continue
+
+            color = {"sense": "gray", 
+                     "synset": "blue"}.get(ntype, "red")
+
+            if ntype == "sense":
+                sense = CwnSense(nid, self)
+                node_tooltip = str(sense)
+                node_label = sense.head_word
+                node_shape = "rect"
+            elif ntype == "synset":
+                synset = CwnSynset(nid, self)
+                node_tooltip = str(synset)
+                node_label = ""
+                node_shape = "point"
+            else:
+                node_label = nid
+                node_tooltip = nid
+                node_shape = "point"
+            
+            if highlight and nid == highlight:
+                penwidth = "2"
+            else:
+                penwidth = "None"
+
+            f.node(nid, label=node_label, shape=node_shape, 
+                color=color, penwidth=penwidth,
+                tooltip=node_tooltip)
+
+        for eid, edata in self.E.items():    
+            node_types = [self.V[x].get("node_type") for x in eid]
+            if "lemma" in node_types:
+                continue
+            eid = tuple(sorted(eid))
+            etype = edata.get("edge_type")
+            if eid not in undirected_edges:
+                color = {"hypernym": "red", "hyponym": "red", 
+                         "holonym": "green", "meronym": "green",
+                         "synonym": "blue", "is_synset": "deepskyblue", 
+                         "has_synset": "blue"}.get(etype)
+                f.edge(*eid, color=color)
+                undirected_edges.add(eid)
+        
+        return f
+
         
 class CwnBase(CwnImage):
     """The base cwn reference data.
