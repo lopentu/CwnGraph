@@ -76,7 +76,8 @@ class CwnImage(CwnGraphUtils):
                              "Set `force_large=True` to override")
         
         import graphviz
-        f = graphviz.Graph('subgraph', engine=layout_engine)        
+        f = graphviz.Graph('graph', engine=layout_engine)        
+        f.attr(overlap="False")
         f.attr('node', margin="0.01", height="0.1", width="0.1")
         undirected_edges = set()
         for nid, ndata in self.V.items():
