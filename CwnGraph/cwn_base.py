@@ -119,7 +119,7 @@ class CwnImage(CwnGraphUtils):
                          "holonym": "green", "meronym": "green",
                          "synonym": "blue", "is_synset": "deepskyblue", 
                          "has_synset": "blue"}.get(etype)
-                f.edge(*eid, color=color)
+                f.edge(*eid, color=color, tooltip=etype)
                 undirected_edges.add(eid)
         
         return f
