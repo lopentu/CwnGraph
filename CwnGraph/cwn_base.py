@@ -63,7 +63,9 @@ class CwnImage(CwnGraphUtils):
     def statistics(self):
         return cwn_stat.simple_statistics(self)
     
-    def to_graphviz(self, highlight=None, force_large=False):
+    def to_graphviz(self, 
+            highlight=None, force_large=False,
+            layout_engine="sfdp"):
         drawn_nodes = [nid 
             for nid, ndata in self.V.items() if
             ndata.get("node_type") != "lemma"]
@@ -74,14 +76,14 @@ class CwnImage(CwnGraphUtils):
                              "Set `force_large=True` to override")
         
         import graphviz
-        f = graphviz.Graph('subgraph', engine="neato")        
+        f = graphviz.Graph('subgraph', engine=layout_engine)        
         f.attr('node', margin="0.01", height="0.1", width="0.1")
         undirected_edges = set()
         for nid, ndata in self.V.items():
             ntype = ndata.get("node_type")
             if ntype=="lemma": continue
 
-            color = {"sense": "gray", 
+            color = {"sense": "gray", "facet": "gray",
                      "synset": "blue"}.get(ntype, "red")
 
             if ntype == "sense":
@@ -118,6 +120,7 @@ class CwnImage(CwnGraphUtils):
                 color = {"hypernym": "red", "hyponym": "red", 
                          "holonym": "green", "meronym": "green",
                          "synonym": "blue", "is_synset": "deepskyblue", 
+                         "has_facet": "gray",
                          "has_synset": "blue"}.get(etype)
                 f.edge(*eid, color=color, tooltip=etype)
                 undirected_edges.add(eid)

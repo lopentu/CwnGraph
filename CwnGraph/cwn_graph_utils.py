@@ -159,7 +159,8 @@ class CwnGraphUtils(GraphStructure):
             max_conn=1000, max_depth=-1, lemma_guard=True, 
             include_upper_relations=True,
             include_lower_relations=True,
-            include_synonym=True):
+            include_synonym=True,
+            include_facets=False):
         '''
         connected(self, node_id, is_directed=False,
             max_conn=1000, max_depth=-1, lemma_guard=True)
@@ -190,8 +191,11 @@ class CwnGraphUtils(GraphStructure):
                     conn_node_x = conn_edge_x.src_id
                 else:
                     conn_node_x = conn_edge_x.tgt_id
+                
+                conn_node_type = self.V.get(conn_node_x, {}).get("node_type")
+                if conn_node_type=="facet" and not include_facets:
+                    continue                    
 
-                ## Using the logical equiv. P -> Q == (not P) or Q
                 rel_type = CwnRelationType[conn_edge_x.relation_type]
                 include_relation = rel_type.is_upper_relation() and \
                                     include_upper_relations                                    
@@ -199,7 +203,7 @@ class CwnGraphUtils(GraphStructure):
                                     include_lower_relations
                 include_relation |= rel_type.is_synonym_relation() and \
                                     include_synonym
-                
+                                
                 if include_relation:
                     ret.add(conn_node_x)
                 else:
