@@ -56,7 +56,7 @@ class CwnGraphUtils(GraphStructure):
         sense_iter = chain.from_iterable(sense_iter)
         return list(sense_iter)
 
-    def find_senses(self, lemma="", definition="", examples=""):
+    def find_senses(self, lemma="", pos="", definition="", examples=""):
         """Find senses with lemmas, definitions, or examples matching
         search patterns.
 
@@ -76,6 +76,7 @@ class CwnGraphUtils(GraphStructure):
         """
 
         lemma_re = re.compile(lemma)
+        pos_re = re.compile(pos)
         def_re = re.compile(definition)
         ex_re = re.compile(examples)
 
@@ -84,26 +85,27 @@ class CwnGraphUtils(GraphStructure):
             if not node_x["node_type"] == "sense":
                 continue
             sense_x = CwnSense(node_id, self)
+            is_matched = True
             if lemma:
                 lemma_matched = any(lemma_re.search(lemma_x.lemma)
                     for lemma_x in sense_x.lemmas)
-            else:
-                lemma_matched = False
+                is_matched &= lemma_matched
 
-            if definition:
+            if pos and is_matched:
+                pos_matched = pos_re.search(sense_x.pos)
+                is_matched &= pos_matched is not None
+
+            if definition and is_matched:
                 def_matched = def_re.search(sense_x.definition)
-            else:
-                def_matched = False
+                is_matched &= def_matched is not None
 
-            if examples:
+            if examples and is_matched:
                 ex_san_re = re.compile(r"[\<\>]")
                 example_matched = any([ex_re.search(ex_san_re.sub("", ex_x))
                     for ex_x in sense_x.examples])
-            else:
-                example_matched = False
+                is_matched &= example_matched
 
-            if lemma_matched or def_matched or \
-                example_matched:
+            if is_matched:
                 sense_list.append(sense_x)
         return sense_list
 
