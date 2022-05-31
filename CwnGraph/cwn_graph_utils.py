@@ -77,8 +77,8 @@ class CwnGraphUtils(GraphStructure):
 
         lemma_re = re.compile(lemma)
         pos_re = re.compile(pos)
-        def_re = re.compile(definition)
-        ex_re = re.compile(examples)
+        def_re = re.compile(re.escape(definition))
+        ex_re = re.compile(re.escape(examples))
 
         sense_list = []
         for node_id, node_x in self.V.items():
