@@ -17,8 +17,11 @@
         }, {
             "tag": "v.2022.04",
             "file": "cwn-graph-v.2022.04.pyobj",
-            "drive_id": "1kS9Fptp44BxgC8OlE8Tc1HN2NkjzzBLm",
-            "note": "dotted-wsd dependency"
+            "drive_id": "1kS9Fptp44BxgC8OlE8Tc1HN2NkjzzBLm",            
+        }, {
+            "tag": "v.2020.05",
+            "file": "cwn-graph-v.2020.05.pyobj",
+            "drive_id": "18Dmy2fU6qGfFOsS3iCV7j-5u9xz6LfdP"
         }
     ]
 }
