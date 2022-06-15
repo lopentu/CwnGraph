@@ -60,8 +60,8 @@ class CwnImage(CwnGraphUtils):
             pickle.dump((self.V, self.E, self.meta), fout)
         return fpath
 
-    def statistics(self):
-        return cwn_stat.simple_statistics(self)
+    def statistics(self, include_all=True):
+        return cwn_stat.simple_statistics(self, include_all)
     
     def to_graphviz(self, 
             highlight=None, force_large=False,

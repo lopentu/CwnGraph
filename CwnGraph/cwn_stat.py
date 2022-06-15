@@ -1,12 +1,12 @@
 from CwnGraph.cwn_graph_utils import CwnGraphUtils
 from CwnGraph.cwn_types.cwn_relation_types import CwnRelationType
-from .cwn_types import CwnSense
+from .cwn_types import CwnSense, CwnLemma
 try:
     from tqdm.auto import tqdm
 except ImportError:
     tqdm = lambda x: x
     
-def simple_statistics(cgu: CwnGraphUtils):
+def simple_statistics(cgu: CwnGraphUtils, include_all=True):
     n_lemma = 0
     n_sense = 0
     n_examples = 0
@@ -15,10 +15,17 @@ def simple_statistics(cgu: CwnGraphUtils):
 
     for nid, ndata in tqdm(cgu.V.items()):
         if ndata["node_type"] == "lemma":
-            n_lemma += 1
+            lemma = CwnLemma(nid, cgu)
+            # only counts lemma with senses
+            if include_all or lemma.senses:
+                n_lemma += 1
         elif ndata["node_type"] == "sense":
-            n_sense += 1
-            n_examples += len(CwnSense(nid, cgu).all_examples())
+            sense = CwnSense(nid, cgu)
+            # only counts senses connected with lemma 
+            # and having a definition
+            if include_all or (sense.lemmas and sense.definition):
+                n_sense += 1
+                n_examples += len(sense.all_examples())
 
     for eid, edata in tqdm(cgu.E.items()):
         try:
