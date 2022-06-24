@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "image_id": "21be34ac7ea8a27ea7c8d3e69aedc935ed86796c",
+    "label": "v.2022.06.17",
+    "bundle_id": "bundle-cwn-workgroup-2021-2022",
+    "annoter": "cwn-ntu",
+    "timestamp": 1655557743.98514,
+    "note": "added data from cwn-workgroup-2021-2022"
+  },
+  "stat": {
+    "n_lemma": 29321,
+    "n_sense": 29433,
+    "n_synset": 19912,
+    "n_examples": 93905,
+    "n_sem_relations": 59700
+  }
+}
