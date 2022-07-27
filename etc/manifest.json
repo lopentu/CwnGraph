@@ -1,19 +1,23 @@
 {
-    "version": "v2022.06",
+    "version": "v2022.07",
     "images": [
         {
-            "tag": "v.2022.06.21",
-            "file": "cwn-graph-v.2022.06.21.pyobj",
-            "drive_id": "125xI2IuRqWrCsKRElK_m5O8-4sYUgM80"
+            "tag": "v.2022.07.15",
+            "file": "cwn-graph-v.2022.07.15.pyobj",
+            "drive_id": "17EupEs70CTFwRFas9wp7nHdJyX9KLj82"
         }, {
             "tag": "base", 
             "file": "cwn_graph.pyobj",
             "drive_id": "1opGRw490cAizoj2JHzR8UIZME3Mc65Ze" 
         }, {
             "tag": "beta", 
-            "file": "cwn-graph-v.2022.06.21.pyobj",
-            "drive_id": "125xI2IuRqWrCsKRElK_m5O8-4sYUgM80",
+            "file": "cwn-graph-v.2022.07.15.pyobj",
+            "drive_id": "17EupEs70CTFwRFas9wp7nHdJyX9KLj82",
             "note": "auditing version, don't cite. "
+        }, {
+            "tag": "v.2022.06",
+            "file": "cwn-graph-v.2022.06.21.pyobj",
+            "drive_id": "125xI2IuRqWrCsKRElK_m5O8-4sYUgM80"
         }, {
             "tag": "v.2022.04",
             "file": "cwn-graph-v.2022.04.pyobj",
