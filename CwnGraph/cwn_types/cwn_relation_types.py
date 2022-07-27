@@ -98,6 +98,17 @@ class CwnRelation:
         self.edge_type = edata.get("edge_type", "generic")        
         self.reversed = reversed
 
+    def __hash__(self):
+        return hash((self.id, self.edge_type, self.reversed))
+
+    def __eq__(self, other):
+        if isinstance(other, CwnRelation):
+            return self.id == other.id and \
+                self.edge_type == other.edge_type and \
+                self.reversed == other.reversed
+        else:
+            return False
+
     @classmethod
     def create(cls, cgu, src_id, tgt_id, edge_type: CwnRelationType):
         eid = (src_id, tgt_id)
