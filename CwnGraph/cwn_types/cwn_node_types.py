@@ -22,7 +22,7 @@ class CwnNode:
 class CwnGlyph(CwnNode):
     def __init__(self, nid, cgu):
         ndata = cgu.get_node_data(nid)
-        self.glyph = ndata.get("glyph", "")        
+        self.glyph = ndata.get("glyph", "")
 
     def __repr__(self):
         return "<CwnLemma: {lemma}_{lemma_sno}>".format(
@@ -60,10 +60,10 @@ class CwnLemma(CwnNode):
         self.node_type = "lemma"
         self.lemma = ndata.get("lemma", "")
         self.lemma_sno = ndata.get("lemma_sno", 1)
-        self.zhuyin = ndata.get("zhuyin", "")        
+        self.zhuyin = ndata.get("zhuyin", "")
         self._senses = None
         self._synsets = None
-        
+
 
     def __repr__(self):
         return "<CwnLemma: {lemma}_{lemma_sno}>".format(
@@ -82,7 +82,7 @@ class CwnLemma(CwnNode):
 
     def data(self):
         """Retrieve all data of this lemma.
-        
+
         Returns
         -------
         dict
@@ -96,11 +96,11 @@ class CwnLemma(CwnNode):
         }
 
     @classmethod
-    def create(cls, cgu, 
-            lemma_id, lemma: str, zhuyin: str, 
+    def create(cls, cgu,
+            lemma_id, lemma: str, zhuyin: str,
             lemma_sno: int=1,
             auto_pad_id=True):
-        
+
         if isinstance(lemma_id, int):
             lemma_id = str(lemma_id)
 
@@ -117,14 +117,14 @@ class CwnLemma(CwnNode):
     @staticmethod
     def from_word(word, cgu):
         """Find lemmas matching search pattern.
-        
+
         Parameters
         ----------
         word : str
             RegEx pattern to search for.
         cgu : CwnBase
             See :class:`CwnBase <CwnGraph.cwn_base.CwnBase>`.
-        
+
         Returns
         -------
         list
@@ -159,16 +159,16 @@ class CwnLemma(CwnNode):
 
 class CwnSense(CwnNode):
     """Class representing a sense.
-    
+
     Attributes
     ----------
     lemmas: list
         a list of :class:`CwnLemma <.CwnLemma>` belonging to this sense.
     relations: list
-        a list of tuples ``(edge_type, end_node, edge_direction)`` 
+        a list of tuples ``(edge_type, end_node, edge_direction)``
         giving the information of the edges linked to this sense
     semantic_relations: list
-        a list of senses or facets (:class:`CwnSense <.CwnSense>` or 
+        a list of senses or facets (:class:`CwnSense <.CwnSense>` or
         :class:`CwnSynset <.CwnSynset>`) related to this sense
     hypernym: list
         a list of hypernyms (:class:`CwnSense <.CwnSense>`) of this
@@ -177,13 +177,13 @@ class CwnSense(CwnNode):
         a list of hyponym (:class:`CwnSense <.CwnSense>`) of this
         sense.
     synset: list
-        a synset (:class:`CwnSynset <.CwnSynset>`) containing this 
+        a synset (:class:`CwnSynset <.CwnSynset>`) containing this
         sense.
     synonym: list
         a list of synonyms (:class:`CwnSense <.CwnSense>`) of this
         sense.
     facets: list
-        a list of sense facets (:class:`CwnFacet <.CwnFacet>`) 
+        a list of sense facets (:class:`CwnFacet <.CwnFacet>`)
         belonging to this sense.
     """
 
@@ -196,14 +196,14 @@ class CwnSense(CwnNode):
         self.definition = ndata.get("def", "")
         self.src = ndata.get("src", None)
         self.examples = ndata.get("examples", [])
-        self.domain = ndata.get("domain", "")        
+        self.domain = ndata.get("domain", "")
         self.supplementary = ndata.get("supplementary", "")
         self._relations = None
         self._lemmas = None
 
-    def __repr__(self):        
+    def __repr__(self):
         try:
-            head_word = self.lemmas[0].lemma                        
+            head_word = self.lemmas[0].lemma
         except (IndexError, AttributeError):
             head_word = "----"
         return "<CwnSense[{id}]({head}，{pos}): {definition}>".format(
@@ -223,12 +223,12 @@ class CwnSense(CwnNode):
         return hash((self.id, self.definition, self.pos, self.src))
 
     @classmethod
-    def create(cls, cgu, 
-            sense_id: str, pos: str, definition: str, 
-            examples: List[str]=[], domain: str="", 
+    def create(cls, cgu,
+            sense_id: str, pos: str, definition: str,
+            examples: List[str]=[], domain: str="",
             supplementary: str="",
             auto_pad_id=True):
-        
+
         if isinstance(sense_id, int):
             sense_id = str(sense_id)
 
@@ -246,7 +246,7 @@ class CwnSense(CwnNode):
 
     def data(self):
         """Retrieve all data of this sense.
-        
+
         Returns
         -------
         dict
@@ -254,34 +254,34 @@ class CwnSense(CwnNode):
             keys: ``node_type``, ``pos``, ``examples``, ``domain``,
             ``annot``, ``def``
         """
-        data_fields = ["node_type", "pos", "examples", 
+        data_fields = ["node_type", "pos", "examples",
                        "domain", "supplementary"]
         data_dict= {
             k: self.__dict__[k] for k in data_fields
         }
-        data_dict["def"] = self.definition        
+        data_dict["def"] = self.definition
         return data_dict
 
     def all_examples(self):
-        """Retrieve all example sentences of this sense, 
+        """Retrieve all example sentences of this sense,
         including examples inside each sense facet.
-        
+
         Returns
         -------
         list
             a list of example sentences (``str``)
         """
         examples = [x for x in self.examples if x]
-        
-        
+
+
         for facet_x in self.facets:
             examples.extend(facet_x.examples)
         return examples
 
     def all_relations(self):
-        """Retrieve all relations in this sense, 
+        """Retrieve all relations in this sense,
         including relations links of sense facets.
-        
+
         Returns
         -------
         list
@@ -289,8 +289,8 @@ class CwnSense(CwnNode):
         """
         relations = self.relations
         if not relations:
-            relations = []        
-        
+            relations = []
+
         for facet_x in self.facets:
             relations.extend(facet_x.relations)
         return relations
@@ -304,7 +304,7 @@ class CwnSense(CwnNode):
             for edge_x in edges:
                 if edge_x.edge_type == "has_sense":
                     lemma_nodes.append(CwnLemma(edge_x.src_id, cgu))
-            self._lemmas = lemma_nodes        
+            self._lemmas = lemma_nodes
         return self._lemmas
 
     @property
@@ -323,8 +323,8 @@ class CwnSense(CwnNode):
             edges = cgu.find_edges(self.id, is_directed=False)
             for edge_x in edges:
                 if edge_x.edge_type.startswith("has_sense"):
-                    continue                
-                
+                    continue
+
                 if not edge_x.reversed:
                     edge_type = edge_x.edge_type
                     end_node_id = edge_x.tgt_id
@@ -333,11 +333,11 @@ class CwnSense(CwnNode):
                     edge_type = edge_x.edge_type
                     end_node_id = edge_x.src_id
                     edge_direction = "reversed"
-                
-                node_data = cgu.get_node_data(end_node_id) 
+
+                node_data = cgu.get_node_data(end_node_id)
                 ntype = node_data.get("node_type")
                 if ntype == "facet":
-                    end_node = CwnFacet(end_node_id, cgu) 
+                    end_node = CwnFacet(end_node_id, cgu)
                 elif ntype == "synset":
                     end_node = CwnSynset(end_node_id, cgu)
                 elif ntype == "pwn_synset":
@@ -352,10 +352,10 @@ class CwnSense(CwnNode):
 
     @property
     def semantic_relations(self):
-        relation_infos = [rel_x 
+        relation_infos = [rel_x
             for rel_x in self.relations
             if rel_x[2] == 'forward']
-            
+
         sem_relations = []
         for rel_x in relation_infos:
             rel_type = CwnRelationType[rel_x[0]]
@@ -363,17 +363,80 @@ class CwnSense(CwnNode):
                 sem_relations.append(rel_x)
         return sem_relations
 
+
+    def paradigmatic_friends(self,
+            relations: List[str],
+            include_reversed=False,            
+            debug=False):
+
+        relation_types = [CwnRelationType[x]
+                          for x in relations]
+
+        friends = []
+        for rel_type, tgt_sense, rel_dir in self.relations:
+            rel_type = CwnRelationType[rel_type]
+
+            # skip reversed relations if include_reverse is False
+            if not include_reversed and rel_dir=="reversed":
+                continue
+
+            if rel_type not in relation_types:
+                continue
+
+            if not isinstance(tgt_sense, CwnSense):
+                continue
+            
+            # the reversed direction use itself as inverse
+            if rel_dir == "reversed":
+                inv_relation_type = rel_type
+            else:
+                inv_relation_type = rel_type.inverse(assume_symmetry=True)
+                
+            # skip if there is no inverse relation
+            if not inv_relation_type:
+                continue
+
+            inv_relation = inv_relation_type.name
+            for pa_rel_type, pa_tgt_sense, pa_rel_dir in tgt_sense.relations:
+                if pa_rel_type == inv_relation and \
+                   pa_rel_dir == rel_dir:
+                   if debug:
+                    friends.append((tgt_sense, pa_rel_type, pa_rel_dir, pa_tgt_sense))
+                   else:
+                    friends.append(pa_tgt_sense)
+
+        friends = set(friends)
+        if self in friends:
+            friends.remove(self)
+        if debug:
+            friends = sorted(list(friends), key=lambda x: x[-1].id)
+        else:
+            friends = sorted(list(friends), key=lambda x: x.id)
+        return friends
+
     @property
     def hypernym(self):
         relation_infos = self.relations
         hypernym = [x[1] for x in relation_infos if x[0] == "hypernym" and x[2] == "forward"]
         return hypernym
-    
+
     @property
     def hyponym(self):
         relation_infos = self.relations
         hypernym = [x[1] for x in relation_infos if x[0] == "hyponym" and x[2] == "forward"]
         return hypernym
+
+    @property
+    def holonym(self):
+        relation_infos = self.relations
+        holonym = [x[1] for x in relation_infos if x[0] == "holonym" and x[2] == "forward"]
+        return holonym
+
+    @property
+    def meronym(self):
+        relation_infos = self.relations
+        meronym = [x[1] for x in relation_infos if x[0] == "meronym" and x[2] == "forward"]
+        return meronym
 
     @property
     def pwn_synsets(self):
@@ -385,9 +448,8 @@ class CwnSense(CwnNode):
     def synset(self):
         relation_infos = self.relations
         synsets = [x[1] for x in relation_infos if x[0] == "is_synset" and x[2] == "forward"]
-        if not synsets:
-            synset = None
-        elif len(synsets) == 1:
+        synset = None
+        if len(synsets) == 1:
             synset = synsets[0]
         elif len(synsets) > 1:
             print("WARNING: more than one synset, returning the first")
@@ -397,7 +459,7 @@ class CwnSense(CwnNode):
     @property
     def synonym(self):
         relation_infos = self.relations
-        synonyms = [x[1] for x in relation_infos 
+        synonyms = [x[1] for x in relation_infos
                     if x[0] == "synonym" and x[2]=="forward"]
         return synonyms
 
@@ -413,7 +475,7 @@ class CwnFacet(CwnSense):
     Attributes
     ----------
     sense: CwnSense
-        the sense (:class:`CwnSense <.CwnSense>`) of this 
+        the sense (:class:`CwnSense <.CwnSense>`) of this
         sense facet
     """
     def __init__(self, nid, cgu):
@@ -431,20 +493,20 @@ class CwnFacet(CwnSense):
         )
 
     @property
-    def lemmas(self):        
+    def lemmas(self):
         return self.sense.lemmas
 
     @property
     def sense(self):
         if self._sense is None:
-            cgu = self.cgu            
+            cgu = self.cgu
             edges = cgu.find_edges(self.id, is_directed=False)
             for edge_x in edges:
                 if edge_x.edge_type == "has_facet":
                     self._sense = CwnSense(edge_x.src_id, cgu)
                     break
         return self._sense
-        
+
 
 class CwnSynset(CwnNode):
     def __init__(self, nid, cgu):
@@ -465,17 +527,17 @@ class CwnSynset(CwnNode):
         )
 
     def data(self):
-        data_fields = ["node_type", "pos", "gloss", 
+        data_fields = ["node_type", "pos", "gloss",
                        "examples", "pwn_word", "pwn_id"]
         data_dict= {
             k: self.__dict__[k] for k in data_fields
         }
         return data_dict
 
-    
+
     @classmethod
-    def create(cls, cgu, 
-            synset_id, pos: str, gloss: str, 
+    def create(cls, cgu,
+            synset_id, pos: str, gloss: str,
             examples: List[str]=[],
             pwn_word: str="", pwn_id: str=""):
         inst = CwnSynset(synset_id, cgu)
@@ -483,7 +545,7 @@ class CwnSynset(CwnNode):
         inst.gloss = gloss
         inst.examples = examples
         inst.pwn_word = pwn_word
-        inst.pwn_id = pwn_id        
+        inst.pwn_id = pwn_id
         return inst
 
     def __eq__(self, other):
@@ -494,7 +556,7 @@ class CwnSynset(CwnNode):
 
     def __hash__(self):
         return hash(self.gloss)
-    
+
     @property
     def definition(self):
         return self.gloss
@@ -507,21 +569,21 @@ class CwnSynset(CwnNode):
             edges = cgu.find_edges(self.id, is_directed=False)
             for edge_x in edges:
                 if edge_x.edge_type.startswith("has_sense"):
-                    continue                
-                
+                    continue
+
                 if not edge_x.reversed:
                     edge_type = edge_x.edge_type
-                    end_node_id = edge_x.tgt_id  
-                    edge_direction = "forward"                  
+                    end_node_id = edge_x.tgt_id
+                    edge_direction = "forward"
                 else:
                     edge_type = edge_x.edge_type
                     end_node_id = edge_x.src_id
                     edge_direction = "reversed"
-                
-                node_data = cgu.get_node_data(end_node_id) 
+
+                node_data = cgu.get_node_data(end_node_id)
                 ntype = node_data.get("node_type")
                 if ntype == "facet":
-                    end_node = CwnFacet(end_node_id, cgu) 
+                    end_node = CwnFacet(end_node_id, cgu)
                 elif ntype == "sense":
                     end_node = CwnSense(end_node_id, cgu)
                 elif ntype == "synset":
@@ -564,15 +626,15 @@ class PwnSynset(CwnNode):
         self.id = nid
         self.node_type = "pwn_synset"
         self.synset_word1_wn16 = ndata.get("synset_word1", "")
-        self.synset_sno_wn16 = ndata.get("synset_sno", "")  
+        self.synset_sno_wn16 = ndata.get("synset_sno", "")
         self.synset_wn30_name = ndata.get("wn30_name", "")
-        try:      
+        try:
             self.synset_wn30 = wn.synset(ndata.get("wn30_name", ""))
         except:
             self.synset_wn30 = None
         self._relations = None
 
-    def __repr__(self):        
+    def __repr__(self):
         return "<PwnSynset[{id}]: {synset_wn30_name}>".format(
             **self.__dict__
         )
@@ -586,12 +648,12 @@ class PwnSynset(CwnNode):
     def __hash__(self):
         return hash(self.synset_word1_wn16)
 
-    def __getattr__(self, attr):                  
-        if attr in PwnSynset.WN_RELATIONS:             
+    def __getattr__(self, attr):
+        if attr in PwnSynset.WN_RELATIONS:
             if not self.synset_wn30:
                 raise AttributeError("attribute not found: " + attr)
-            else:                
-                rel_method = getattr(self.synset_wn30, attr)                
+            else:
+                rel_method = getattr(self.synset_wn30, attr)
                 return rel_method
         else:
             raise AttributeError("attribute not found: " + attr)
@@ -606,7 +668,7 @@ class PwnSynset(CwnNode):
             k: self.__dict__[k] for k in data_fields
         }
         return data_dict
-    
+
     @property
     def wn30_synset(self):
         try:
@@ -620,21 +682,21 @@ class PwnSynset(CwnNode):
             cgu = self.cgu
             relation_infos = []
             edges = cgu.find_edges(self.id, is_directed=False)
-            for edge_x in edges:               
-                
+            for edge_x in edges:
+
                 if not edge_x.reversed:
                     edge_type = edge_x.edge_type
-                    end_node_id = edge_x.tgt_id  
-                    edge_direction = "forward"                  
+                    end_node_id = edge_x.tgt_id
+                    edge_direction = "forward"
                 else:
                     edge_type = edge_x.edge_type
                     end_node_id = edge_x.src_id
                     edge_direction = "reversed"
-                
-                node_data = cgu.get_node_data(end_node_id) 
+
+                node_data = cgu.get_node_data(end_node_id)
                 ntype = node_data.get("node_type")
                 if ntype == "facet":
-                    end_node = CwnFacet(end_node_id, cgu) 
+                    end_node = CwnFacet(end_node_id, cgu)
                 elif ntype == "sense":
                     end_node = CwnSense(end_node_id, cgu)
                 elif ntype == "synset":
@@ -652,15 +714,15 @@ class PwnSynset(CwnNode):
         relation_infos = self.relations
         senses = [x[1] for x in relation_infos if x[1].node_type=="sense"]
         return senses
-    
+
     @property
     def facets(self):
         relation_infos = self.relations
         senses = [x[1] for x in relation_infos if x[1].node_type=="facet"]
-        return senses    
-    
+        return senses
+
     @property
     def cwn_synsets(self):
         relation_infos = self.relations
         senses = [x[1] for x in relation_infos if x[1].node_type=="synset"]
-        return senses 
+        return senses

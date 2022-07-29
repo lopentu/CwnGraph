@@ -1,3 +1,4 @@
+from typing import Optional
 from enum import Enum, auto
 
 class CwnRelationType(Enum):
@@ -46,13 +47,19 @@ class CwnRelationType(Enum):
         return self.name in (
             "synonym", "is_synset", "has_synset"
         )
-    def inverse(self):
+    def inverse(self, assume_symmetry=False) -> Optional["CwnRelationType"]:
         cls = self.__class__
         inverse_pairs = [
             (cls.has_instance, cls.instance_of),
             (cls.hypernym, cls.hyponym),
-            (cls.holonym, cls.meronym)
+            (cls.holonym, cls.meronym)            
         ]
+
+        if assume_symmetry:
+            inverse_pairs.extend([
+                (cls.synonym, cls.synonym),
+                (cls.antonym, cls.antonym)
+            ])
 
         for rel_x, rel_y in inverse_pairs:
             if self == rel_x:
@@ -90,6 +97,17 @@ class CwnRelation:
         self.id = eid
         self.edge_type = edata.get("edge_type", "generic")        
         self.reversed = reversed
+
+    def __hash__(self):
+        return hash((self.id, self.edge_type, self.reversed))
+
+    def __eq__(self, other):
+        if isinstance(other, CwnRelation):
+            return self.id == other.id and \
+                self.edge_type == other.edge_type and \
+                self.reversed == other.reversed
+        else:
+            return False
 
     @classmethod
     def create(cls, cgu, src_id, tgt_id, edge_type: CwnRelationType):
