@@ -2,7 +2,7 @@ import pdb
 import re
 from itertools import chain, groupby
 from .cwn_types import *
-from .evaluate_wng import evaluate_wngual
+
 
 class CwnGraphUtils(GraphStructure):
     """cwn data as graph (vertices and edges)
@@ -280,10 +280,7 @@ class CwnGraphUtils(GraphStructure):
         return self.E.get(edge_id, {})
 
     def from_sense_id(self, sense_id):
-        if len(str(sense_id))<=8:
-            return CwnSense(sense_id, self)
-        else:
-            return CwnFacet(sense_id, self)
+        return CwnSense(sense_id, self)
 
     def get_all_lemmas(self):
         lemmas = [CwnLemma(nid, self) for nid, ndata in self.V.items()
@@ -303,7 +300,4 @@ class CwnGraphUtils(GraphStructure):
         synsets = [CwnSynset(nid, self) for nid, ndata in self.V.items()
                     if ndata["node_type"] == "synset"]
         return synsets
-
-    def evaluate(self, wng_str: str):        
-        return evaluate_wngual(self, wng_str)
 
