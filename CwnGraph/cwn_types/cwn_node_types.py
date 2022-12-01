@@ -383,9 +383,9 @@ class CwnSense(CwnNode):
     @property
     def hyponym(self):
         relation_infos = self.relations
-        hypernym = [x[1] for x in relation_infos if x[0]
-                    == "hyponym" and x[2] == "forward"]
-        return hypernym
+        hyponym = [x[1] for x in relation_infos if x[0]
+                   == "hyponym" and x[2] == "forward"]
+        return hyponym
 
     @property
     def holonym(self):
