@@ -1,9 +1,8 @@
-CwnGraph
+CwnGraph: Cwn Python API 程式介面
 =========
 
-Cwn Python API 程式介面
 
-> Chinese WordNet with Graph Interface
+> Chinese Wordnet with Graph Interface
 
 說明文件：[readthedocs](https://cwngraph.readthedocs.io/en/latest/)
 
