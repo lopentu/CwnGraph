@@ -1,0 +1,146 @@
+{
+  "Na": {
+    "pos": "Na",
+    "label": "普通名詞"
+  },
+  "Nb": {
+    "pos": "Nb",
+    "label": "專有名詞"
+  },
+  "Nc": {
+    "pos": "Nc",
+    "label": "地方名詞"
+  },
+  "Ncd": {
+    "pos": "Ncd",
+    "label": "位置名詞"
+  },
+  "Nd": {
+    "pos": "Nd",
+    "label": "時間名詞"
+  },
+  "Nf": {
+    "pos": "Nf",
+    "label": "量詞"
+  },
+  "Ng": {
+    "pos": "Ng",
+    "label": "後置詞"
+  },
+  "Nh": {
+    "pos": "Nh",
+    "label": "代名詞"
+  },
+  "VA": {
+    "pos": "VA",
+    "label": "動作不及物動詞"
+  },
+  "VAC": {
+    "pos": "VAC",
+    "label": "動作使動動詞"
+  },
+  "VB": {
+    "pos": "VB",
+    "label": "動作類及物動詞"
+  },
+  "VC": {
+    "pos": "VC",
+    "label": "動作及物動詞"
+  },
+  "VCL": {
+    "pos": "VCL",
+    "label": "動作接地方賓語動詞"
+  },
+  "VD": {
+    "pos": "VD",
+    "label": "雙賓動詞"
+  },
+  "VE": {
+    "pos": "VE",
+    "label": "動作句賓動詞"
+  },
+  "VF": {
+    "pos": "VF",
+    "label": "動作謂賓動詞"
+  },
+  "VG": {
+    "pos": "VG",
+    "label": "分類動詞"
+  },
+  "VH": {
+    "pos": "VH",
+    "label": "狀態不及物動詞"
+  },
+  "VHC": {
+    "pos": "VHC",
+    "label": "狀態使動動詞"
+  },
+  "VI": {
+    "pos": "VI",
+    "label": "狀態類及物動詞"
+  },
+  "VJ": {
+    "pos": "VJ",
+    "label": "狀態及物動詞"
+  },
+  "VK": {
+    "pos": "VK",
+    "label": "狀態句賓動詞"
+  },
+  "VL": {
+    "pos": "VL",
+    "label": "狀態謂賓動詞"
+  },
+  "V_2": {
+    "pos": "V_2",
+    "label": "有"
+  },
+  "A": {
+    "pos": "A",
+    "label": "非謂形容詞"
+  },
+  "D": {
+    "pos": "D",
+    "label": "副詞"
+  },
+  "Caa": {
+    "pos": "Caa",
+    "label": "對等連接詞"
+  },
+  "Cab": {
+    "pos": "Cab",
+    "label": "連接詞"
+  },
+  "Cba": {
+    "pos": "Cba",
+    "label": "連接詞"
+  },
+  "Cbb": {
+    "pos": "Cbb",
+    "label": "關聯連接詞"
+  },
+  "P": {
+    "pos": "P",
+    "label": "介詞"
+  },
+  "T": {
+    "pos": "T",
+    "label": "語助詞"
+  },
+  "I": {
+    "pos": "I",
+    "label": "感嘆詞"
+  },
+  "DE": {
+    "pos": "DE",
+    "label": "的之得地"
+  },
+  "SHI": {
+    "pos": "SHI",
+    "label": "是"
+  },
+  "FW": {
+    "pos": "FW",
+    "label": "外文"
+  }
+}

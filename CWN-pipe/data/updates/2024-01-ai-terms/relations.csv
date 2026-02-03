@@ -1,0 +1,4 @@
+src_id,tgt_id,edge_type
+10000201,10000101,hyponym
+10000301,10000201,hyponym
+10000101,10000102,nearsynonym

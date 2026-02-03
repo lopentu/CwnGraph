@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(git clone:*)",
+      "Bash(uv pip install:*)",
+      "Bash(uv venv:*)",
+      "Bash(source:*)",
+      "Bash(.venv/bin/pip install:*)",
+      "Bash(.venv/bin/cwn-update:*)",
+      "Bash(.venv/bin/pytest:*)",
+      "Bash(.venv/bin/python3:*)"
+    ]
+  }
+}

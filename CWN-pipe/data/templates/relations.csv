@@ -1,0 +1,4 @@
+src_id,tgt_id,edge_type
+06613601,06582901,hypernym
+06613601,syn_004128,is_synset
+06613602,06613601,nearsynonym
